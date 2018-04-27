@@ -1,0 +1,3 @@
+gcc -m32 ./src/asm/head.s -nostdlib -T./ls/head.ls -o ./obj/head.bin
+rustc --target=i686-unknown-linux-gnu --crate-type=staticlib --emit=obj -C lto -C opt-level=2 -C no-prepopulate-passes -C no-stack-check -Z verbose -Z no-landing-pads -C relocation-model=static -L./obj   -o ./obj/boot.o ./src/rust/*.rs  
+Makefile:27: ターゲット 'obj/os.sys' のレシピで失敗しました
