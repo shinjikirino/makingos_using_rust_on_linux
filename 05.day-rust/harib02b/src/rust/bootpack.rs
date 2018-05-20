@@ -110,16 +110,34 @@ pub extern fn hlt() {
 }
 
 #[no_mangle]
+// アライメントに注意。参考：https://ryochack.hatenablog.com/entry/2018/03/23/184943
+#[repr(packed)]  // pragma pack と同等
+struct Bootinfo {
+	cyls: u8,
+	leds: u8,
+	vmode: u8,
+	reserve: u8,
+	scrnx: i16,
+	scrny: i16,
+//	vram: *mut u8,
+	vram: i32,
+}
+
+#[no_mangle]
 #[start]
 pub extern fn Main() {
-	init_palate(0, 15);
-	let p_xsize = 0x0ff4 as *mut i16;
-	let p_ysize = 0x0ff6 as *mut i16;
-	let p_vram = 0x0ff8 as *mut i32;
+	let p_bootinfo = BOOTINFO_ADDR!() as *mut Bootinfo;
+	let mut xsize:i32;
+	let mut ysize:i32;
+	let mut vram: i32;
 	unsafe {
-		let xsize = *p_xsize as i32;
-		let ysize = *p_ysize as i32;
-		let vram = *p_vram;
+		xsize = (*p_bootinfo).scrnx as i32;
+		ysize = (*p_bootinfo).scrny as i32;
+		vram = (*p_bootinfo).vram as i32;
+	}
+
+	init_palate(0, 15);
+	unsafe {
 		init_screen(vram, xsize, ysize);
 	}
 
