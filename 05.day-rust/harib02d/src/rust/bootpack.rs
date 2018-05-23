@@ -133,7 +133,7 @@ const font_A:[u8;16] = [
 pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;16]) {
 	for i in 0..16 + 1 {
 		let mut addr = vram  + (y + i) * xsize + x;
-		let d = c_array[i];
+		let d = c_array[i as usize];
 		unsafe {
 			if (d & 0x80 != 0) {
 				let p = addr as *mut u8;
@@ -183,8 +183,9 @@ pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;
 pub extern fn Main() {
 	let p_bootinfo = BOOTINFO_ADDR!() as *mut Bootinfo;
 	init_palate(0, 15);
-	unsafe {
+	unsafe {  // 構造体のポインタの先を見に行くのでunsafe。いずれunsafeブロックを使用しないようにする
 		init_screen((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, (*p_bootinfo).scrny as i32);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 10, 10, COL8_FFFFFF!(), font_A);
 	}
 
 	loop {
