@@ -124,64 +124,61 @@ struct Bootinfo {
 }
 
 
-const font_A:[u8;16] = [
-	0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
-];
-
-
 #[no_mangle]
 pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;16]) {
-	for i in 0..16 + 1 {
-		let mut addr = vram  + (y + i) * xsize + x;
-		let d = c_array[i as usize];
+	// for i in 0..16 {  // forだとうまく行かない。なぜかloopだとうまく行く
+	let mut i = 0;
+	loop {
+		let addr = (vram + (y + i) * xsize + x) as i32;
+		let d = c_array[i as usize] as u8;
 		unsafe {
-			if (d & 0x80 != 0) {
+			if ((d & 0x80) != 0) {
 				let p = addr as *mut u8;
 				*p = c;
 			}
-			if (d & 0x40 != 0) {
-				addr = addr + 1;
-				let p = addr as *mut u8;
+			if ((d & 0x40) != 0) {
+				let p = (addr + 1) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x20 != 0) {
-				addr = addr + 2;
-				let p = addr as *mut u8;
+			if ((d & 0x20) != 0) {
+				let p = (addr + 2) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x10 != 0) {
-				addr = addr + 3;
-				let p = addr as *mut u8;
+			if ((d & 0x10) != 0) {
+				let p = (addr + 3) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x08 != 0) {
-				addr = addr + 4;
-				let p = addr as *mut u8;
+			if ((d & 0x08) != 0) {
+				let p = (addr + 4) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x04 != 0) {
-				addr = addr + 5;
-				let p = addr as *mut u8;
+			if ((d & 0x04) != 0) {
+				let p = (addr + 5) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x02 != 0) {
-				addr = addr + 6;
-				let p = addr as *mut u8;
+			if ((d & 0x02) != 0) {
+				let p = (addr + 6) as *mut u8;
 				*p = c;
 			}
-			if (d & 0x01 != 0) {
-				addr = addr + 7;
-				let p = addr as *mut u8;
+			if ((d & 0x01) != 0) {
+				let p = (addr + 7) as *mut u8;
 				*p = c;
 			}
 		}
+		i = i + 1;
+		if (i == 15) {break;}  // ダサいからいずれ原因救命してforに戻す
 	}
+	return;
 }
 
 #[no_mangle]
 #[start]
 pub extern fn Main() {
 	let p_bootinfo = BOOTINFO_ADDR!() as *mut Bootinfo;
+	let font_A:[u8;16] = [
+		0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
+	];
+
 	init_palate(0, 15);
 	unsafe {  // 構造体のポインタの先を見に行くのでunsafe。いずれunsafeブロックを使用しないようにする
 		init_screen((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, (*p_bootinfo).scrny as i32);
