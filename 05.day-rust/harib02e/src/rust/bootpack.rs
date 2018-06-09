@@ -2,8 +2,10 @@
 #![feature(start)]
 #![no_main]
 #![feature(no_std)]
+#![feature(panic_implementation)]
 #![no_std]
 
+use core::panic::PanicInfo;
 extern crate font;
 
 macro_rules! COL8_000000 {() => (0);}
@@ -204,5 +206,8 @@ pub extern fn Main() {
 extern fn eh_personality() {}
 
 #[no_mangle]
-#[lang = "panic_fmt"]
-extern fn panic_fmt() -> ! { loop {} }
+#[lang = "panic_impl"]
+#[panic_implementation]
+pub fn panic(_info: &PanicInfo) -> ! {
+    loop {}
+}
