@@ -53,9 +53,15 @@ for line in src :
 		i = 16
 		c = int(line[7:9], 16)
 
-code = "#[allow(dead_code)]"
-code += "mod font {" + "\n\t"
-code += "pub const HANKAKU:[u8;4096] = ["
+code = "#![allow(dead_code)]" + "\n"
+code += "#![no_std]" + "\n"
+
+# code += "pub mod font {" + "\n\t"
+code += "pub mod font {" + "\n\t"
+code += "#[no_mangle]" + "\n"
+code += "pub static mut font_A: [u8;16] = [0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00];\n"
+code += "#[no_mangle]" + "\n"
+code += "pub static mut HANKAKU:[u8;4096] = ["
 i = 0
 for d in data :
 	if i != 0 : code += ","

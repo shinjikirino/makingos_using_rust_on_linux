@@ -128,13 +128,15 @@ struct Bootinfo {
 
 
 #[no_mangle]
-pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;16]) {
+// pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;16]) {
+pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:*mut u8) {
 	// for i in 0..16 {  // forだとうまく行かない。なぜかloopだとうまく行く。ダサい
 	let mut i = 0;
 	loop {
 		let addr = (vram + (y + i) * xsize + x) as i32;
-		let d = c_array[i as usize] as u8;
+		// let d = c_array[i as usize] as u8;
 		unsafe {
+			let d = *((c_array as u32 + i as u32) as *mut u8);
 			if ((d & 0x80) != 0) {
 				let p = addr as *mut u8;
 				*p = c;
@@ -169,7 +171,7 @@ pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;
 			}
 		}
 		i = i + 1;
-		if (i == 15) {break;}  // ダサいからいずれ原因救命してforに戻す
+		if (i == (16 - 1) as i32) {break;}  // ダサいからいずれ原因救命してforに戻す
 	}
 	return;
 }
@@ -178,28 +180,34 @@ pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:[u8;
 #[start]
 pub extern fn Main() {
 	let p_bootinfo = BOOTINFO_ADDR!() as *mut Bootinfo;
-	/*
-	let font_A:[u8;16] = [
+	
+	let mut font_A:[u8;16] = [
 		0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
 	];
-	*/
 
 	init_palate(0, 15);
+
 	unsafe {  // 構造体のポインタの先を見に行くのでunsafe。いずれunsafeブロックを使用しないようにする
 		init_screen((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, (*p_bootinfo).scrny as i32);
-		// putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 10, 10, COL8_FFFFFF!(), font_A);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 8, 10, COL8_FFFFFF!(), font::HANKAKU + 'A' * 16);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 16, 10, COL8_FFFFFF!(), font::HANKAKU + 'B' * 16);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 24, 10, COL8_FFFFFF!(), font::HANKAKU + 'C' * 16);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 40, 10, COL8_FFFFFF!(), font::HANKAKU + '1' * 16);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 48, 10, COL8_FFFFFF!(), font::HANKAKU + '2' * 16);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 56, 10, COL8_FFFFFF!(), font::HANKAKU + '3' * 16);
+		let indexA = 'A' as usize * 16;
+		let indexB = 'B' as usize * 16;
+		let indexC = 'C' as usize * 16;
+		let index1 = '1' as usize * 16;
+		let index2 = '2' as usize * 16;
+		let index3 = '3' as usize * 16;
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 8, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexA] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 16, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexB] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 24, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexC] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 40, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index1] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 48, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index2] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 56, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index3] as *mut u8);
 	}
 
 	loop {
 		hlt()
 	}
 }
+
 
 #[no_mangle]
 #[lang = "eh_personality"]

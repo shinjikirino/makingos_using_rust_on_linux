@@ -80,17 +80,16 @@ pipelineflash:
 
 # start bootpack
 	movl $BOTPAK, %ebx
-	movl $0x11a8, %ecx
+	movl 16(%ebx), %ecx
 	addl $3, %ecx
 	shrl $2, %ecx
 	jz skip
-	movl $0x10c8, %esi
+	movl 20(%ebx), %esi
 	addl %ebx, %esi
-	movl $0x00310000, %edi
+	movl 12(%ebx), %edi
 	call memcpy
 skip:
-	movl $0x00310000, %esp
-	# ljmpl $2*8, $0x00000000
+	movl 12(%ebx), %esp
 	ljmpl $2*8, $0x0000001b
 
 ###########################

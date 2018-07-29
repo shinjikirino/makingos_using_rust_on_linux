@@ -21,7 +21,7 @@ RUSTCLIBOPT=--target=i686-unknown-linux-gnu --crate-type=lib -C lto -C opt-level
 BINOPT=-nostdlib -Wl,--oformat=binary
 QEMUOPT=-m 32 -localtime -vga std -fda
 ASOPT=--32 -march=i386
-LDOPT=-m elf_i386 -nostdlib --oformat=binary
+LDOPT=-m elf_i386 -nostdlib --oformat=binary -M -t
 
 $(IMG) : $(OSSYS) $(IPL)
 	mformat -f 1440 -C -B $(IPL) -i $(IMG) ::
@@ -31,7 +31,7 @@ $(OSSYS) : $(ASRC)/head.s $(ASRC)/func.s $(RSRC)/bootpack.rs
 	gcc -m32 $(ASRC)/head.s -nostdlib -T$(LS)/head.ls -o $(OBJ)/head.bin
 	$(TOOL)/mkfont $(FONT)/hankaku.txt -o $(FONTRSRC)/font.rs
 	# rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.a $(FONTRSRC)/font.rs  
-	# rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.rlib $(FONTRSRC)/font.rs  
+	rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.rlib $(FONTRSRC)/font.rs  
 	rustc $(RUSTCOPT) -o $(OBJ)/boot.o $(RSRC)/*.rs  
 	as $(ASOPT) $(ASRC)/func.s -o $(OBJ)/func.o
 	ld $(LDOPT) -e $(ENTRY) -T$(LS)/boot.ls -o $(OBJ)/boot.bin $(OBJ)/boot.o $(OBJ)/func.o

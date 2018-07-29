@@ -1,5 +1,4 @@
 OUTPUT_FORMAT("binary");
-
 SECTIONS
 {
     .head 0x0 : {
@@ -13,11 +12,12 @@ SECTIONS
         LONG(Main - 0x20) /* 28 : エントリアドレス - 0x20 */
         LONG(0)               /* 32 : heap領域（malloc領域）開始アドレス */
     }
-    .text : { *(.text) }
+    .text : { *(.text*) }  /* To prohibit overrap .text~~ and .data */
     .data 0x310000 : AT ( ADDR(.text) + SIZEOF(.text) ) {
-        *(.data)
+	*(.data)   /* To set font crate (.data.font~~ section) */
+	*(.data*)   /* To set font crate (.data.font~~ section) */
         *(.rodata*)
-        *(.bss)
+        *(.bss*)
     }
     /DISCARD/ : { *(.eh_frame) }
 }
