@@ -8,24 +8,24 @@
 use core::panic::PanicInfo;
 extern crate font;
 
-macro_rules! COL8_000000 {() => (0);}
-macro_rules! COL8_FF0000 {() => (1);}
-macro_rules! COL8_00FF00 {() => (2);}
-macro_rules! COL8_FFFF00 {() => (3);}
-macro_rules! COL8_0000FF {() => (4);}
-macro_rules! COL8_FF00FF {() => (5);}
-macro_rules! COL8_00FFFF {() => (6);}
-macro_rules! COL8_FFFFFF {() => (7);}
-macro_rules! COL8_C6C6C6 {() => (8);}
-macro_rules! COL8_840000 {() => (9);}
-macro_rules! COL8_008400 {() => (10);}
-macro_rules! COL8_848400 {() => (11);}
-macro_rules! COL8_000084 {() => (12);}
-macro_rules! COL8_840084 {() => (13);}
-macro_rules! COL8_008484 {() => (14);}
-macro_rules! COL8_848484 {() => (15);}
+pub const COL8_000000: u8 = 0;
+pub const COL8_FF0000: u8 = 1;
+pub const COL8_00FF00: u8 = 2;
+pub const COL8_FFFF00: u8 = 3;
+pub const COL8_0000FF: u8 = 4;
+pub const COL8_FF00FF: u8 = 5;
+pub const COL8_00FFFF: u8 = 6;
+pub const COL8_FFFFFF: u8 = 7;
+pub const COL8_C6C6C6: u8 = 8;
+pub const COL8_840000: u8 = 9;
+pub const COL8_008400: u8 = 10;
+pub const COL8_848400: u8 = 11;
+pub const COL8_000084: u8 = 12;
+pub const COL8_840084: u8 = 13;
+pub const COL8_008484: u8 = 14;
+pub const COL8_848484: u8 = 15;
 
-macro_rules! BOOTINFO_ADDR {() => (0x0ff0);}
+pub const BOOTINFO_ADDR: u32 = 0x0ff0;
 
 #[no_mangle]
 extern {
@@ -86,22 +86,22 @@ pub extern fn boxfill8(vram: i32, xsize: i32, c: u8, x0: i32, y0: i32, x1: i32, 
 
 #[no_mangle]
 pub extern fn init_screen(vram:i32, xsize:i32, ysize:i32) {
-	boxfill8(vram, xsize, COL8_008484!(), 0, 			0, 			xsize - 1, 	ysize - 29	);
-	boxfill8(vram, xsize, COL8_C6C6C6!(), 0, 			ysize - 28, xsize - 1, 	ysize - 28	);
-	boxfill8(vram, xsize, COL8_FFFFFF!(), 0, 			ysize - 27, xsize - 1, 	ysize - 27	);
-	boxfill8(vram, xsize, COL8_C6C6C6!(), 0, 			ysize - 26, xsize - 1, 	ysize - 1	);
+	boxfill8(vram, xsize, COL8_008484, 0, 			0, 			xsize - 1, 	ysize - 29	);
+	boxfill8(vram, xsize, COL8_C6C6C6, 0, 			ysize - 28, xsize - 1, 	ysize - 28	);
+	boxfill8(vram, xsize, COL8_FFFFFF, 0, 			ysize - 27, xsize - 1, 	ysize - 27	);
+	boxfill8(vram, xsize, COL8_C6C6C6, 0, 			ysize - 26, xsize - 1, 	ysize - 1	);
 
-	boxfill8(vram, xsize, COL8_FFFFFF!(), 3, 			ysize - 24, 59, 		ysize - 24	);
-	boxfill8(vram, xsize, COL8_FFFFFF!(), 2, 			ysize - 24, 2, 			ysize - 4	);
-	boxfill8(vram, xsize, COL8_848484!(), 3, 			ysize - 4, 	59, 		ysize - 4	);
-	boxfill8(vram, xsize, COL8_848484!(), 59, 			ysize - 23, 59, 		ysize - 5	);
-	boxfill8(vram, xsize, COL8_000000!(), 2, 			ysize - 3, 	59, 		ysize - 3	);
-	boxfill8(vram, xsize, COL8_000000!(), 60, 			ysize - 24, 60, 		ysize - 3	);
+	boxfill8(vram, xsize, COL8_FFFFFF, 3, 			ysize - 24, 59, 		ysize - 24	);
+	boxfill8(vram, xsize, COL8_FFFFFF, 2, 			ysize - 24, 2, 			ysize - 4	);
+	boxfill8(vram, xsize, COL8_848484, 3, 			ysize - 4, 	59, 		ysize - 4	);
+	boxfill8(vram, xsize, COL8_848484, 59, 			ysize - 23, 59, 		ysize - 5	);
+	boxfill8(vram, xsize, COL8_000000, 2, 			ysize - 3, 	59, 		ysize - 3	);
+	boxfill8(vram, xsize, COL8_000000, 60, 			ysize - 24, 60, 		ysize - 3	);
 
-	boxfill8(vram, xsize, COL8_848484!(), xsize - 47, 	ysize - 24, xsize - 4, 	ysize - 24	);
-	boxfill8(vram, xsize, COL8_848484!(), xsize - 47, 	ysize - 23, xsize - 47, ysize - 4	);
-	boxfill8(vram, xsize, COL8_FFFFFF!(), xsize - 47, 	ysize - 3, 	xsize - 4, 	ysize - 3	);
-	boxfill8(vram, xsize, COL8_FFFFFF!(), xsize - 3, 	ysize - 24, xsize - 3, 	ysize - 3	);
+	boxfill8(vram, xsize, COL8_848484, xsize - 47, 	ysize - 24, xsize - 4, 	ysize - 24	);
+	boxfill8(vram, xsize, COL8_848484, xsize - 47, 	ysize - 23, xsize - 47, ysize - 4	);
+	boxfill8(vram, xsize, COL8_FFFFFF, xsize - 47, 	ysize - 3, 	xsize - 4, 	ysize - 3	);
+	boxfill8(vram, xsize, COL8_FFFFFF, xsize - 3, 	ysize - 24, xsize - 3, 	ysize - 3	);
 }
 
 
@@ -122,7 +122,6 @@ struct Bootinfo {
 	reserve: u8,
 	scrnx: i16,
 	scrny: i16,
-//	vram: *mut u8,
 	vram: i32,
 }
 
@@ -179,12 +178,8 @@ pub extern fn putfont8(vram: i32, xsize: i32, x: i32, y: i32, c:u8, c_array:*mut
 #[no_mangle]
 #[start]
 pub extern fn Main() {
-	let p_bootinfo = BOOTINFO_ADDR!() as *mut Bootinfo;
+	let p_bootinfo = BOOTINFO_ADDR as *mut Bootinfo;
 	
-	let mut font_A:[u8;16] = [
-		0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, 0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
-	];
-
 	init_palate(0, 15);
 
 	unsafe {  // 構造体のポインタの先を見に行くのでunsafe。いずれunsafeブロックを使用しないようにする
@@ -195,12 +190,12 @@ pub extern fn Main() {
 		let index1 = '1' as usize * 16;
 		let index2 = '2' as usize * 16;
 		let index3 = '3' as usize * 16;
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 8, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexA] as *mut u8);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 16, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexB] as *mut u8);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 24, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[indexC] as *mut u8);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 40, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index1] as *mut u8);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 48, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index2] as *mut u8);
-		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 56, 10, COL8_FFFFFF!(), &mut font::font::HANKAKU[index3] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 8, 10, COL8_FFFFFF, &mut font::font::HANKAKU[indexA] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 16, 10, COL8_FFFFFF, &mut font::font::HANKAKU[indexB] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 24, 10, COL8_FFFFFF, &mut font::font::HANKAKU[indexC] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 40, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index1] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 48, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index2] as *mut u8);
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 56, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index3] as *mut u8);
 	}
 
 	loop {
