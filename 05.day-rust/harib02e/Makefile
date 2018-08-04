@@ -4,6 +4,8 @@ ASRC=./src/asm
 CSRC=./src/c
 RSRC=./src/rust
 FONTRSRC=./src/rust/font
+KEYBOARDRSRC=./src/rust/keyboard
+IORSRC=./src/rust/io
 OBJ=./obj
 LS=./ls
 TOOL=./tool
@@ -32,6 +34,8 @@ $(OSSYS) : $(ASRC)/head.s $(ASRC)/func.s $(RSRC)/bootpack.rs
 	$(TOOL)/mkfont $(FONT)/hankaku.txt -o $(FONTRSRC)/font.rs
 	# rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.a $(FONTRSRC)/font.rs  
 	rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.rlib $(FONTRSRC)/font.rs  
+	rustc $(RUSTCLIBOPT) -o $(OBJ)/libkeyboard.rlib $(FONTRSRC)/keyboard.rs  
+	rustc $(RUSTCLIBOPT) -o $(OBJ)/libio.rlib $(FONTRSRC)/io.rs  
 	rustc $(RUSTCOPT) -o $(OBJ)/boot.o $(RSRC)/*.rs  
 	as $(ASOPT) $(ASRC)/func.s -o $(OBJ)/func.o
 	ld $(LDOPT) -e $(ENTRY) -T$(LS)/boot.ls -o $(OBJ)/boot.bin $(OBJ)/boot.o $(OBJ)/func.o

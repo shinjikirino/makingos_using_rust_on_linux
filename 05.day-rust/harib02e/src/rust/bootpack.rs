@@ -7,6 +7,7 @@
 
 use core::panic::PanicInfo;
 extern crate font;
+extern crate keyboard;
 
 pub const COL8_000000: u8 = 0;
 pub const COL8_FF0000: u8 = 1;
@@ -196,6 +197,9 @@ pub extern fn Main() {
 		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 40, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index1] as *mut u8);
 		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 48, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index2] as *mut u8);
 		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 56, 10, COL8_FFFFFF, &mut font::font::HANKAKU[index3] as *mut u8);
+
+    let indexKey = keyboard::GetC() as usize * 16;
+		putfont8((*p_bootinfo).vram, (*p_bootinfo).scrnx as i32, 64, 10, COL8_FFFFFF, &mut font::font::HANKAKU[indexKey] as *mut u8);
 	}
 
 	loop {
