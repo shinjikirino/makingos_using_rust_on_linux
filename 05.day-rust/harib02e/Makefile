@@ -18,7 +18,7 @@ IPL=$(OBJ)/ipl.bin
 
 RUSTCOPT=--target=i686-unknown-linux-gnu --crate-type=staticlib --emit=obj -C lto -C opt-level=2 -C no-prepopulate-passes -C no-stack-check -Z verbose -Z no-landing-pads -C relocation-model=static -L$(OBJ)  
 # RUSTCLIBOPT=--target=i686-unknown-linux-gnu --crate-type=staticlib -C lto -C opt-level=2 -C no-prepopulate-passes -C no-stack-check -Z verbose -Z no-landing-pads -C relocation-model=static
-RUSTCLIBOPT=--target=i686-unknown-linux-gnu --crate-type=lib -C lto -C opt-level=2 -C no-prepopulate-passes -C no-stack-check -Z verbose -Z no-landing-pads -C relocation-model=static
+RUSTCLIBOPT=--target=i686-unknown-linux-gnu --crate-type=rlib -C lto -C opt-level=2 -C no-prepopulate-passes -C no-stack-check -Z verbose -Z no-landing-pads -Z print-link-args -C relocation-model=static -L$(OBJ)
 # -C relocation-model=static を追加。これがないと、bootpack.rsにexternで書いた関数が位置独立コードとしてGOTを参照しにいって、GOTが定義されていないエラーとなる。今回はfunc.sに関数の中身がいるので、静的に再配置させるようコンパイラに認識させる
 BINOPT=-nostdlib -Wl,--oformat=binary
 QEMUOPT=-m 32 -localtime -vga std -fda
@@ -33,9 +33,9 @@ $(OSSYS) : $(ASRC)/head.s $(ASRC)/func.s $(RSRC)/bootpack.rs
 	gcc -m32 $(ASRC)/head.s -nostdlib -T$(LS)/head.ls -o $(OBJ)/head.bin
 	$(TOOL)/mkfont $(FONT)/hankaku.txt -o $(FONTRSRC)/font.rs
 	# rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.a $(FONTRSRC)/font.rs  
+	rustc $(RUSTCLIBOPT) -o $(OBJ)/libio.rlib $(IORSRC)/io.rs  
 	rustc $(RUSTCLIBOPT) -o $(OBJ)/libfont.rlib $(FONTRSRC)/font.rs  
-	rustc $(RUSTCLIBOPT) -o $(OBJ)/libkeyboard.rlib $(FONTRSRC)/keyboard.rs  
-	rustc $(RUSTCLIBOPT) -o $(OBJ)/libio.rlib $(FONTRSRC)/io.rs  
+	rustc $(RUSTCLIBOPT) -o $(OBJ)/libkeyboard.rlib $(KEYBOARDRSRC)/keyboard.rs  
 	rustc $(RUSTCOPT) -o $(OBJ)/boot.o $(RSRC)/*.rs  
 	as $(ASOPT) $(ASRC)/func.s -o $(OBJ)/func.o
 	ld $(LDOPT) -e $(ENTRY) -T$(LS)/boot.ls -o $(OBJ)/boot.bin $(OBJ)/boot.o $(OBJ)/func.o

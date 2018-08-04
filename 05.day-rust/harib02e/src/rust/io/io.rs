@@ -6,15 +6,19 @@
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub mod io {
 	#[no_mangle]
-	pub extern fn Read(addr: u16) => u8{
-		let value: u8 = 0;
+	pub extern fn Read(addr: u16) -> u8{
+		let mut value: u8 = 0;
 		unsafe {
-			asm!("inb %[addr], %[value]"
-				: [value]"=a"(value)
-				: [addr]"d"(addr)
+			asm!("inb %dx, %al"
+				// : [value]"=a"(value)
+				// : "=a"(value)
+				: "={al}"(value)
+				// : [addr]"d"(addr)
+				// : "d"(addr)
+				: "{dx}"(addr)
 				:
 				:);
 		}
 		return value;
-	};
+	}
 }
